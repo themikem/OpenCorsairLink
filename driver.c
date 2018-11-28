@@ -329,6 +329,7 @@ struct corsair_device_driver corsairlink_driver_commanderpro = {
             .count = corsairlink_unspported_fan,
             .speed = corsairlink_unspported_fan,
             .print_mode = corsairlink_commanderpro_fan_print_mode,
+	    .mask = corsairlink_commanderpro_get_fan_setup_mask,
             .profile =
                 {
                     .read_profile = corsairlink_unspported_fan,
@@ -339,9 +340,9 @@ struct corsair_device_driver corsairlink_driver_commanderpro = {
                     .write_profile_performance = corsairlink_unspported_fan,
                     .write_profile_balanced = corsairlink_unspported_fan,
                     .write_profile_quiet = corsairlink_unspported_fan,
-                    .write_rpm = corsairlink_unspported_fan,
-                    .write_pwm = corsairlink_unspported_fan,
-                    .write_custom_curve = corsairlink_unspported_fan,
+                    .write_rpm = corsairlink_commanderpro_set_fan_speed_rpm,
+                    .write_pwm = corsairlink_commanderpro_set_fan_speed_pwm,
+                    .write_custom_curve = corsairlink_commanderpro_set_fan_curve,
                 },
         },
     .power =

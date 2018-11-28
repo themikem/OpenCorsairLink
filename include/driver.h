@@ -114,6 +114,13 @@ struct corsair_device_driver
             struct libusb_device_handle* handle,
             struct fan_control* ctrl );
 
+        int ( *mask )(
+            struct corsair_device_info* dev,
+            struct libusb_device_handle* handle,
+            struct fan_control* ctrl,
+	    uint8_t* mask );
+
+
         struct fan_profile_functions
         {
             int ( *read_profile )(

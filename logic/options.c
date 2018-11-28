@@ -41,7 +41,7 @@ options_parse(
     memset( settings, 0, sizeof( struct option_parse_return ) );
     memset( flags, 0, sizeof( struct option_flags ) );
 
-    // fan_control_init( &settings->fan_ctrl );
+    fan_control_init( &settings->fan_ctrl );
     // led_control_init( &settings->led_ctrl );
     // pump_control_init( &settings->pump_ctrl );
 

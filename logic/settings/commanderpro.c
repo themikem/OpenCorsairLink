@@ -43,6 +43,11 @@ commanderpro_settings(
     uint32_t time = 0;
     struct corsair_device_info* dev;
     struct libusb_device_handle* handle;
+    uint8_t fan_mask[6];
+    int start_fan_channel;
+    int end_fan_channel;
+
+    struct fan_control fan_ctrl;
 
     dev = scanned_device.device;
     handle = scanned_device.handle;
@@ -83,6 +88,112 @@ commanderpro_settings(
         rr = dev->driver->power.voltage( dev, handle, ii, &output_volts );
         msg_info( "%5.2f V\n", output_volts );
     }
+
+    /* fetch fan mask */
+    msg_info("\nFan Setup:\n");
+    fan_ctrl.channel = ii;
+    rr = dev->driver->fan.mask(dev, handle, &fan_ctrl, &fan_mask[0]);
+    for ( ii = 0; ii < 6; ii++ )
+    {
+	msg_info( "    %d: ", (ii+1));
+
+        switch ( fan_mask[ii] )
+        {
+        case 0x00:
+            msg_info( "Auto/Disconnected\n" );
+            break;
+        case 0x01:
+            msg_info( "3-Pin\n" );
+            break;
+        case 0x02:
+            msg_info( "4-Pin\n" );
+            break;
+        case 0x03:
+            msg_info( "Unknown\n" );
+            break;
+        default:
+            msg_info( "Impossible!\n" );
+        }
+    }
+
+    msg_info("\nFan status: \n");
+    if(0 == settings.fan_ctrl.channel)
+    {
+        for ( ii = 0; ii < 6; ii++ )
+        {
+	    settings.fan_ctrl.channel = ii+1;
+	    rr = dev->driver->fan.profile.read_rpm(dev, handle, &(settings.fan_ctrl));\
+
+	    msg_info("    %d: %d RPM\n", ii+1, settings.fan_ctrl.speed_rpm);
+        }
+	start_fan_channel = 1;
+	end_fan_channel = 6;
+    } else {
+        msg_info("\n    Requested channel: %d\n", settings.fan_ctrl.channel);
+        rr = dev->driver->fan.profile.read_rpm(dev, handle, &(settings.fan_ctrl));
+        msg_info("    Fan RPM: %d\n", settings.fan_ctrl.speed_rpm);
+        rr = dev->driver->fan.profile.read_pwm(dev, handle, &(settings.fan_ctrl));
+        msg_info("    Fan PWM: %d\n", settings.fan_ctrl.speed_pwm);
+    //rr = dev->driver->fan.print_mode( settings.fan_ctrl.mode, 0, name, sizeof( name ) );
+    //msg_info("    Mode: %s\n", name );
+        start_fan_channel = settings.fan_ctrl.channel;
+        end_fan_channel = settings.fan_ctrl.channel;
+    }
+
+    msg_info( "Setting Fans\n" );
+    if ( flags.set_fan == 1 )
+    {
+    for ( ii = start_fan_channel; ii <= end_fan_channel; ii++ ) {
+	settings.fan_ctrl.channel = ii;
+
+
+
+        switch ( settings.fan_ctrl.mode )
+        {
+        case QUIET:
+            if ( dev->driver->fan.profile.write_profile_quiet != NULL )
+            {
+                dev->driver->fan.profile.write_profile_quiet( dev, handle, &settings.fan_ctrl );
+            }
+            break;
+        case BALANCED:
+            if ( dev->driver->fan.profile.write_profile_balanced != NULL )
+            {
+                dev->driver->fan.profile.write_profile_balanced( dev, handle, &settings.fan_ctrl );
+            }
+            break;
+        case PERFORMANCE:
+            if ( dev->driver->fan.profile.write_profile_performance != NULL )
+            {
+                dev->driver->fan.profile.write_profile_performance(
+                    dev, handle, &settings.fan_ctrl );
+            }
+            break;
+        case CUSTOM:
+            if ( dev->driver->fan.profile.write_custom_curve != NULL )
+            {
+		msg_info( "    %d: Setting Custom Curve!\n", ii );
+                dev->driver->fan.profile.write_custom_curve( dev, handle, &settings.fan_ctrl );
+            }
+            break;
+	case PWM:
+	    if( dev->driver->fan.profile.write_pwm != NULL )
+	    {
+		dev->driver->fan.profile.write_pwm(dev, handle, &settings.fan_ctrl);
+	    }
+	    break;
+	case RPM:
+	    if( dev->driver->fan.profile.write_rpm != NULL )
+	    {
+		dev->driver->fan.profile.write_rpm(dev, handle, &settings.fan_ctrl);
+	    }
+	    break;
+        default:
+            msg_info( "Unsupported Fan Mode\n" );
+            break;
+        }
+    }
+}
 
     msg_debug( "Setting LED\n" );
     if ( flags.set_led == 1 )
@@ -136,40 +247,8 @@ commanderpro_settings(
         }
     }
 
-    if ( flags.set_fan == 1 )
-    {
-        switch ( settings.fan_ctrl.mode )
-        {
-        case QUIET:
-            if ( dev->driver->fan.profile.write_profile_quiet != NULL )
-            {
-                dev->driver->fan.profile.write_profile_quiet( dev, handle, &settings.fan_ctrl );
-            }
-            break;
-        case BALANCED:
-            if ( dev->driver->fan.profile.write_profile_balanced != NULL )
-            {
-                dev->driver->fan.profile.write_profile_balanced( dev, handle, &settings.fan_ctrl );
-            }
-            break;
-        case PERFORMANCE:
-            if ( dev->driver->fan.profile.write_profile_performance != NULL )
-            {
-                dev->driver->fan.profile.write_profile_performance(
-                    dev, handle, &settings.fan_ctrl );
-            }
-            break;
-        case CUSTOM:
-            if ( dev->driver->fan.profile.write_custom_curve != NULL )
-            {
-                dev->driver->fan.profile.write_custom_curve( dev, handle, &settings.fan_ctrl );
-            }
-            break;
-        default:
-            msg_info( "Unsupported Fan Mode\n" );
-            break;
-        }
-    }
+    
+    
 
     rr = dev->driver->deinit( handle, dev->write_endpoint );
 

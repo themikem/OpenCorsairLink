@@ -102,6 +102,10 @@ corsairlink_commanderpro_fan_print_mode(
     uint8_t mode, uint16_t data, char* modestr, uint8_t modestr_size );
 
 int
+corsairlink_commanderpro_get_fan_setup_mask(
+    struct corsair_device_info* dev, struct libusb_device_handle* handle, struct fan_control* ctrl, uint8_t* mask );
+
+int
 corsairlink_commanderpro_get_fan_speed_rpm(
     struct corsair_device_info* dev,
     struct libusb_device_handle* handle,
@@ -114,9 +118,27 @@ corsairlink_commanderpro_get_fan_speed_pwm(
     struct fan_control* ctrl );
 
 int
+corsairlink_commanderpro_set_fan_speed_rpm(
+    struct corsair_device_info* dev, 
+    struct libusb_device_handle* handle, 
+    struct fan_control* ctrl );
+
+int
+corsairlink_commanderpro_set_fan_speed_pwm(
+    struct corsair_device_info* dev, 
+    struct libusb_device_handle* handle, 
+    struct fan_control* ctrl );
+
+int
 corsairlink_commanderpro_get_fan_detect_type(
     struct corsair_device_info* dev,
     struct libusb_device_handle* handle,
+    struct fan_control* ctrl );
+
+int
+corsairlink_commanderpro_set_fan_curve(
+    struct corsair_device_info* dev, 
+    struct libusb_device_handle* handle, 
     struct fan_control* ctrl );
 
 /* Temperature */
