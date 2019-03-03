@@ -37,12 +37,14 @@ commanderpro_settings(
 {
     int rr;
     int ii;
+    int rr2;
     char name[32];
     name[sizeof( name ) - 1] = 0;
     double output_volts;
     uint32_t time = 0;
     struct corsair_device_info* dev;
     struct libusb_device_handle* handle;
+    struct fan_control fanctrl;
 
     dev = scanned_device.device;
     handle = scanned_device.handle;
@@ -82,6 +84,18 @@ commanderpro_settings(
 
         rr = dev->driver->power.voltage( dev, handle, ii, &output_volts );
         msg_info( "%5.2f V\n", output_volts );
+    }
+
+    /* fetch fan speeds */
+    for ( ii = 0; ii < 6; ii++ )
+    {
+        fanctrl.channel = ii;
+
+
+
+        rr = dev->driver->fan.profile.read_pwm( dev, handle, &fanctrl );
+        rr2 = dev->driver->fan.profile.read_rpm( dev, handle, &fanctrl );
+        msg_info( "Fan %d:   %d pct / %d rpm\n", ii, fanctrl.speed_pwm,fanctrl.speed_rpm);
     }
 
     msg_debug( "Setting LED\n" );
@@ -163,6 +177,18 @@ commanderpro_settings(
             if ( dev->driver->fan.profile.write_custom_curve != NULL )
             {
                 dev->driver->fan.profile.write_custom_curve( dev, handle, &settings.fan_ctrl );
+            }
+            break;
+        case PWM:
+            if( dev->driver->fan.profile.write_pwm != NULL )
+            {
+                dev->driver->fan.profile.write_pwm(dev ,handle, &settings.fan_ctrl );
+            }
+            break;
+        case RPM:
+            if( dev->driver->fan.profile.write_rpm != NULL )
+            {
+                dev->driver->fan.profile.write_rpm(dev ,handle, &settings.fan_ctrl );
             }
             break;
         default:

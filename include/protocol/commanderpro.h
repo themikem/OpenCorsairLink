@@ -119,6 +119,18 @@ corsairlink_commanderpro_get_fan_detect_type(
     struct libusb_device_handle* handle,
     struct fan_control* ctrl );
 
+int
+corsairlink_commanderpro_set_fan_speed_pwm(
+    struct corsair_device_info* dev,
+    struct libusb_device_handle* handle,
+    struct fan_control* ctrl );
+
+int
+corsairlink_commanderpro_set_fan_speed_rpm(
+        struct corsair_device_info* dev,
+        struct libusb_device_handle* handle,
+        struct fan_control* ctrl );
+
 /* Temperature */
 int
 corsairlink_commanderpro_tempsensorscount(
