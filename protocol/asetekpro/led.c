@@ -18,8 +18,9 @@
 
 #include "device.h"
 #include "driver.h"
+#include "logic/print.h"
+#include "logic/options.h"
 #include "lowlevel/asetek.h"
-#include "print.h"
 #include "protocol/asetekpro.h"
 
 #include <errno.h>
@@ -57,8 +58,8 @@ corsairlink_asetekpro_led_static_color(
     commands[6] = ctrl->led_colors[0].green;
     commands[7] = ctrl->led_colors[0].blue;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 8 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 3 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 8 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 3 );
 
     msg_debug2( "%02X %02X %02X\n", response[0], response[1], response[2] );
 
@@ -70,8 +71,8 @@ corsairlink_asetekpro_led_static_color(
     commands[0] = 0x55;
     commands[1] = 0x01;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 2 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 3 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 2 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 3 );
 
     msg_debug2( "%02X %02X %02X\n", response[0], response[1], response[2] );
 
@@ -124,8 +125,8 @@ corsairlink_asetekpro_led_blink(
     commands[21] = ctrl->led_colors[6].green;
     commands[22] = ctrl->led_colors[6].blue;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 23 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 3 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 23 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 3 );
 
     msg_debug2( "%02X %02X %02X\n", response[0], response[1], response[2] );
 
@@ -148,8 +149,8 @@ corsairlink_asetekpro_led_blink(
         commands[1] = 0x05;
     }
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 2 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 3 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 2 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 3 );
 
     msg_debug2( "%02X %02X %02X\n", response[0], response[1], response[2] );
 
@@ -161,8 +162,8 @@ corsairlink_asetekpro_led_blink(
     commands[0] = 0x58;
     commands[1] = 0x01;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 2 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 3 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 2 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 3 );
 
     msg_debug2( "%02X %02X %02X\n", response[0], response[1], response[2] );
 
@@ -216,8 +217,8 @@ corsairlink_asetekpro_led_color_pulse(
     commands[21] = ctrl->led_colors[6].green;
     commands[22] = ctrl->led_colors[6].blue;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 23 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 3 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 23 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 3 );
 
     msg_debug2( "%02X %02X %02X\n", response[0], response[1], response[2] );
 
@@ -241,8 +242,8 @@ corsairlink_asetekpro_led_color_pulse(
         commands[1] = 0x1E;
     }
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 2 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 3 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 2 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 3 );
 
     msg_debug2( "%02X %02X %02X\n", response[0], response[1], response[2] );
 
@@ -255,8 +256,8 @@ corsairlink_asetekpro_led_color_pulse(
     commands[0] = 0x52;
     commands[1] = 0x01;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 2 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 3 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 2 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 3 );
 
     msg_debug2( "%02X %02X %02X\n", response[0], response[1], response[2] );
 
@@ -309,8 +310,8 @@ corsairlink_asetekpro_led_color_shift(
     commands[21] = ctrl->led_colors[6].green;
     commands[22] = ctrl->led_colors[6].blue;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 23 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 3 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 23 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 3 );
 
     msg_debug2( "%02X %02X %02X\n", response[0], response[1], response[2] );
 
@@ -333,8 +334,8 @@ corsairlink_asetekpro_led_color_shift(
         commands[1] = 0x0F;
     }
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 2 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 3 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 2 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 3 );
 
     msg_debug2( "%02X %02X %02X\n", response[0], response[1], response[2] );
 
@@ -346,8 +347,8 @@ corsairlink_asetekpro_led_color_shift(
     commands[0] = 0x55;
     commands[1] = 0x01;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 2 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 3 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 2 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 3 );
 
     msg_debug2( "%02X %02X %02X\n", response[0], response[1], response[2] );
 
@@ -383,8 +384,8 @@ corsairlink_asetekpro_led_rainbow(
         commands[1] = 0x0C;
     }
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 2 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 3 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 2 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 3 );
 
     msg_debug2(
         "DEBUG: Rainbow mode response %02X %02X %02X\n", response[0], response[1], response[2] );
@@ -397,8 +398,8 @@ corsairlink_asetekpro_led_rainbow(
     commands[0] = 0x55;
     commands[1] = 0x01;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 2 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 3 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 2 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 3 );
 
     msg_debug2(
         "DEBUG: Rainbow commit response %02X %02X %02X\n", response[0], response[1], response[2] );
@@ -438,8 +439,8 @@ corsairlink_asetekpro_led_temperature(
     commands[14] = ctrl->led_colors[2].green;
     commands[15] = ctrl->led_colors[2].blue;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 16 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 6 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 16 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 6 );
 
     msg_debug2(
         "%02X %02X %02X %02X %02X %02X\n", response[0], response[1], response[2], response[3],
@@ -453,8 +454,8 @@ corsairlink_asetekpro_led_temperature(
     commands[0] = 0x5E;
     commands[1] = 0x01;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 2 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 3 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 2 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 3 );
 
     msg_debug2( "%02X %02X %02X\n", response[0], response[1], response[2] );
 

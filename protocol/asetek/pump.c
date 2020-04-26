@@ -16,10 +16,11 @@
  * along with OpenCorsairLink.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "device.h"
 #include "driver.h"
+#include "device.h"
+#include "logic/print.h"
+#include "logic/options.h"
 #include "lowlevel/asetek.h"
-#include "print.h"
 #include "protocol/asetek.h"
 
 #include <errno.h>
@@ -48,8 +49,8 @@ corsairlink_asetek_pump_mode(
     else if ( ctrl->mode == QUIET )
         commands[1] = Asetek_Quiet;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 2 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 32 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 2 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 32 );
 
     return rr;
 }
@@ -69,8 +70,8 @@ corsairlink_asetek_pump_mode_quiet(
     commands[0] = PumpMode;
     commands[1] = Asetek_Quiet;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 2 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 32 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 2 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 32 );
 
     return rr;
 }
@@ -90,8 +91,8 @@ corsairlink_asetek_pump_mode_performance(
     commands[0] = PumpMode;
     commands[1] = Asetek_Performance;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 2 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 32 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 2 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 32 );
 
     return rr;
 }
@@ -110,8 +111,8 @@ corsairlink_asetek_pump_speed(
 
     commands[0] = 0x20;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 32 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 32 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 32 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 32 );
 
     msg_debug2( "%02X %02X\n", response[8], response[9] );
     ctrl->speed = ( response[8] << 8 ) + response[9];

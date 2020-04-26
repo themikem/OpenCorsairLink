@@ -16,10 +16,9 @@
  * along with OpenCorsairLink.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "logic/options.h"
-
 #include "common.h"
-#include "print.h"
+#include "logic/options.h"
+#include "logic/print.h"
 
 #include <errno.h>
 #include <stdio.h>
@@ -50,7 +49,7 @@ options_parse(
         switch ( opt )
         {
         case OPTION_VERSION: /* program version */
-            msg_info( "OpenCorsairLink Version: %s", VERSION );
+            msg_info( "OpenCorsairLink Version: %s\n", VERSION );
             break;
 
         case OPTION_DEBUG:
@@ -159,6 +158,7 @@ options_print( void )
     msg_info( "\n" );
     msg_info( "\t\tModes:\n" );
     msg_info( "\t\t\t 3 - Quiet\n" );
+    msg_info( "\t\t\t 4 - Balanced\n" );
     msg_info( "\t\t\t 5 - Performance\n" );
 
     msg_info( "\n Without options, OpenCorsairLink will show the status of any "

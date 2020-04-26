@@ -16,9 +16,9 @@
  * along with OpenCorsairLink.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*! \file protocol/rmi/fan.c
- *  \brief Fan Routines for RMi Series of Power Supplies
- */
+#include "driver.h"
+#include <stdint.h>
+
 int corsairlink_rmi_fan_rpm(
     struct corsair_device_info* dev, struct libusb_device_handle* handle, uint16_t rpm )
 {
@@ -33,8 +33,8 @@ int corsairlink_rmi_fan_rpm(
     commands[2] = 0x00;
     commands[3] = 0x00;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 64 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 64 );
 
     memcpy( rpm, response + 2, 2 );
 

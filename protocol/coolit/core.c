@@ -19,7 +19,7 @@
 #include "device.h"
 #include "driver.h"
 #include "lowlevel/coolit.h"
-#include "print.h"
+#include "logic/print.h"
 #include "protocol/coolit.h"
 
 #include <errno.h>
@@ -46,8 +46,8 @@ corsairlink_coolit_device_id(
     commands[++ii] = DeviceID; // Command data...
     commands[0] = ii; // Length
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 64 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 64 );
 
     memcpy( device_id, response + 2, 1 );
 
@@ -109,8 +109,8 @@ corsairlink_coolit_firmware_id(
     commands[++ii] = FirmwareID; // Command data...
     commands[0] = ii; // Length
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 64 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 64 );
 
     snprintf(
         firmware, firmware_size, "%d.%d.%d", ( response[3] & 240 ) >> 4, ( response[3] & 15 ),

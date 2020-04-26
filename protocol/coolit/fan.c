@@ -18,8 +18,9 @@
 
 #include "device.h"
 #include "driver.h"
+#include "logic/print.h"
+#include "logic/options.h"
 #include "lowlevel/coolit.h"
-#include "print.h"
 #include "protocol/coolit.h"
 
 #include <errno.h>
@@ -47,8 +48,8 @@ corsairlink_coolit_fan_count(
 
     commands[0] = ii;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 64 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 64 );
 
     ctrl->fan_count = response[2] - 1; // we subtract 1 because count includes pump
 
@@ -109,8 +110,8 @@ corsairlink_coolit_fan_mode_read(
 
     commands[0] = ii;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 64 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 64 );
 
     ctrl->mode = response[4];
 
@@ -139,8 +140,8 @@ corsairlink_coolit_fan_mode_read_rpm(
 
     commands[0] = ii;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 64 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 64 );
 
     ctrl->mode = response[4];
 
@@ -152,8 +153,8 @@ corsairlink_coolit_fan_mode_read_rpm(
     commands[++ii] = ReadTwoBytes;
     commands[++ii] = FAN_FixedRPM;
     commands[0] = ii;
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 64 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 64 );
     ctrl->speed_rpm = ( response[3] << 8 ) + response[2];
 
     return rr;
@@ -181,8 +182,8 @@ corsairlink_coolit_fan_mode_read_pwm(
 
     commands[0] = ii;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 64 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 64 );
 
     ctrl->mode = response[4];
 
@@ -194,8 +195,8 @@ corsairlink_coolit_fan_mode_read_pwm(
     commands[++ii] = ReadOneByte;
     commands[++ii] = FAN_FixedPWM;
     commands[0] = ii;
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 64 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 64 );
     ctrl->speed_pwm = response[2];
 
     return rr;
@@ -225,8 +226,8 @@ corsairlink_coolit_fan_mode_performance(
 
     commands[0] = ii;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 64 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 64 );
 
     return rr;
 }
@@ -255,8 +256,8 @@ corsairlink_coolit_fan_mode_balanced(
 
     commands[0] = ii;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 64 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 64 );
 
     return rr;
 }
@@ -285,8 +286,8 @@ corsairlink_coolit_fan_mode_quiet(
 
     commands[0] = ii;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 64 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 64 );
 
     return rr;
 }
@@ -315,8 +316,8 @@ corsairlink_coolit_fan_mode_default(
 
     commands[0] = ii;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 64 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 64 );
 
     return rr;
 }
@@ -350,8 +351,8 @@ corsairlink_coolit_fan_mode_rpm(
 
     commands[0] = ii;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 64 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 64 );
 
     return rr;
 }
@@ -384,8 +385,8 @@ corsairlink_coolit_fan_mode_pwm(
 
     commands[0] = ii;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 64 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 64 );
 
     return rr;
 }
@@ -414,8 +415,8 @@ corsairlink_coolit_fan_mode_custom(
 
     commands[0] = ii;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 64 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 64 );
 
     return rr;
 }
@@ -468,8 +469,8 @@ corsairlink_coolit_fan_curve(
     commands[++ii] = 0x00;
 
     commands[0] = ii;
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 64 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 64 );
 
     return rr;
 }
@@ -501,8 +502,8 @@ corsairlink_coolit_fan_speed(
 
     commands[0] = ii;
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 64 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 64 );
 
     msg_debug2( "Speed: %02X %02X\n", response[5], response[4] );
     msg_debug2( "Max Speed: %02X %02X\n", response[9], response[8] );
