@@ -18,6 +18,7 @@
 
 #include "device.h"
 #include "driver.h"
+#include "logic/options.h"
 #include "lowlevel/coolit.h"
 #include "protocol/coolit.h"
 
@@ -73,8 +74,8 @@ corsairlink_coolit_change_led(
 
     commands[0] = ii; // Length
 
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
+    rr = dev->lowlevel->write( handle, dev->write_endpoint, commands, 64 );
+    rr = dev->lowlevel->read( handle, dev->read_endpoint, response, 64 );
 
     // fan_rpm = (long int) response[0]*16*16 + response[1];
     // pump_rpm = (response[8]*16*16)+response[9];

@@ -16,34 +16,24 @@
  * along with OpenCorsairLink.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _DEVICE_H
-#define _DEVICE_H
+#include "driver.h"
 
-#include <stdint.h>
+#include "device.h"
+#include "lowlevel/rmi.h"
+#include "logic/print.h"
+#include "protocol/rmi.h"
 
-struct corsair_device_info
-{
-    /** device info */
-    char name[64];
-    uint16_t vendor_id;
-    uint16_t product_id;
-    uint16_t device_id;
-
-    /** device endpoints */
-    uint8_t read_endpoint;
-    uint8_t write_endpoint;
-
-    /** device control info */
-    struct corsair_device_driver* driver;
-    struct corsair_lowlevel_driver* lowlevel;
-    
-    uint8_t led_control_count; // used mostly with COOLIT driver
-    uint8_t fan_control_count; // used with COOLIT driver
-    uint8_t temperature_control_count;
-    uint8_t pump_index; // used with COOLIT driver
+struct corsair_lowlevel_driver corsairlink_lowlevel_dongle = {
+    .init = corsairlink_rmi_init,
+    .deinit = corsairlink_rmi_deinit,
+    .read = corsairlink_rmi_read,
+    .write = corsairlink_rmi_write,
 };
 
-extern struct corsair_device_info corsairlink_devices[];
-extern uint8_t corsairlink_device_list_count;
-
-#endif
+struct corsair_device_driver corsairlink_driver_dongle = {
+    .name = corsairlink_rmi_name,
+    .vendor = corsairlink_rmi_vendor,
+    .product = corsairlink_rmi_product,
+    .device_id = corsairlink_rmi_device_id,
+    .fw_version = corsairlink_rmi_firmware_id,
+};

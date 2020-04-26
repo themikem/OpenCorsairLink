@@ -16,34 +16,25 @@
  * along with OpenCorsairLink.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _DEVICE_H
-#define _DEVICE_H
+#ifndef _UNSUPPORTED_H
+#define _UNSUPPORTED_H
 
-#include <stdint.h>
+int
+corsairlink_unsupported_led(
+    struct corsair_device_info* dev,
+    struct libusb_device_handle* handle,
+    struct led_control* ctrl );
 
-struct corsair_device_info
-{
-    /** device info */
-    char name[64];
-    uint16_t vendor_id;
-    uint16_t product_id;
-    uint16_t device_id;
+int
+corsairlink_unsupported_fan(
+    struct corsair_device_info* dev,
+    struct libusb_device_handle* handle,
+    struct fan_control* ctrl );
 
-    /** device endpoints */
-    uint8_t read_endpoint;
-    uint8_t write_endpoint;
+int
+corsairlink_unsupported_pump(
+    struct corsair_device_info* dev,
+    struct libusb_device_handle* handle,
+    struct pump_control* ctrl );
 
-    /** device control info */
-    struct corsair_device_driver* driver;
-    struct corsair_lowlevel_driver* lowlevel;
-    
-    uint8_t led_control_count; // used mostly with COOLIT driver
-    uint8_t fan_control_count; // used with COOLIT driver
-    uint8_t temperature_control_count;
-    uint8_t pump_index; // used with COOLIT driver
-};
-
-extern struct corsair_device_info corsairlink_devices[];
-extern uint8_t corsairlink_device_list_count;
-
-#endif
+#endif // _UNSUPPORTED_H

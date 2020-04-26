@@ -20,7 +20,7 @@
 #include "driver.h"
 #include "logic/options.h"
 #include "logic/scan.h"
-#include "print.h"
+#include "logic/print.h"
 #include "protocol/asetek.h"
 
 #include <errno.h>
@@ -49,7 +49,7 @@ hydro_asetek_settings(
     handle = scanned_device.handle;
     msg_debug( "DEBUG: shortcuts set\n" );
 
-    rr = dev->driver->init( handle, dev->write_endpoint );
+    rr = dev->lowlevel->init( handle, dev->write_endpoint );
     msg_debug( "DEBUG: init done\n" );
 
     /* fetch device name, vendor name, product name */
@@ -83,15 +83,15 @@ hydro_asetek_settings(
         rr = dev->driver->fan.speed( dev, handle, &readings.fan_ctrl );
         msg_info( "Fan %d:\t%s\n", ii, readings.fan_ctrl.mode_string );
         msg_info(
-            "\tCurrent/Max Speed %i/%i RPM\n", readings.fan_ctrl.speed_rpm,
+            "\tCurrent/Max Speed %i/%i RPM\n", readings.fan_ctrl.speed,
             readings.fan_ctrl.max_speed );
         msg_machine(
-            "fan:%d:%d:%i:%i\n", ii, readings.fan_ctrl.mode, readings.fan_ctrl.speed_rpm,
+            "fan:%d:%d:%i:%i\n", ii, readings.fan_ctrl.mode, readings.fan_ctrl.speed,
             readings.fan_ctrl.max_speed );
     }
 
     /* read pump info */
-    rr = dev->driver->pump.profile.read_profile( dev, handle, &readings.pump_ctrl );
+    // rr = dev->driver->pump.profile.read_profile( dev, handle, &readings.pump_ctrl );
     rr = dev->driver->pump.speed( dev, handle, &readings.pump_ctrl );
     msg_info( "Pump:\tMode 0x%02X\n", readings.pump_ctrl.mode );
     msg_info(
@@ -170,25 +170,15 @@ hydro_asetek_settings(
         switch ( settings.pump_ctrl.mode )
         {
         case QUIET:
-            ASETEK_FAN_TABLE_QUIET( settings.pump_ctrl.table );
-            dev->driver->pump.profile.write_custom_curve( dev, handle, &settings.pump_ctrl );
-            break;
-        case BALANCED:
-            ASETEK_FAN_TABLE_BALANCED( settings.pump_ctrl.table );
-            dev->driver->pump.profile.write_custom_curve( dev, handle, &settings.pump_ctrl );
+            dev->driver->pump.profile.write_profile_quiet( dev, handle, &settings.pump_ctrl );
             break;
         case PERFORMANCE:
-            ASETEK_FAN_TABLE_EXTREME( settings.pump_ctrl.table );
-            dev->driver->pump.profile.write_custom_curve( dev, handle, &settings.pump_ctrl );
-            break;
-        case CUSTOM:
-        default:
-            dev->driver->pump.profile.write_custom_curve( dev, handle, &settings.pump_ctrl );
+            dev->driver->pump.profile.write_profile_performance( dev, handle, &settings.pump_ctrl );
             break;
         }
     }
 
-    rr = dev->driver->deinit( handle, dev->write_endpoint );
+    rr = dev->lowlevel->deinit( handle, dev->write_endpoint );
     msg_debug( "DEBUG: deinit done\n" );
 
     return 0;
